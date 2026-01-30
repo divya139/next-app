@@ -1,11 +1,12 @@
 import React from 'react'
 import { SearchIcon, Plus, XIcon } from 'lucide-react';
+import Link from 'next/link';
 
 const NavBar = () => {
   return (
    <div className="navbar bg-base-100 shadow-sm">
   <div className="flex-1">
-    <a className="btn btn-ghost text-xl">TastySpatula</a>
+    <Link className="btn btn-ghost text-xl" href='/'>TastySpatula</Link>
   </div>
   <div className="flex-none">
     <div className="dropdown dropdown-end">
