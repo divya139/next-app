@@ -1,6 +1,6 @@
 import React from 'react'
-import { SearchIcon, Plus, XIcon } from 'lucide-react';
 import Link from 'next/link';
+import CartPage from '../cart/page';
 
 const NavBar = () => {
   return (
@@ -23,7 +23,7 @@ const NavBar = () => {
           <span className="text-lg font-bold">8 Items</span>
           <span className="text-info">Subtotal: $999</span>
           <div className="card-actions">
-            <button className="btn btn-primary btn-block">View cart</button>
+            <Link className="btn btn-primary btn-block" href={'/cart'}>View cart</Link>
           </div>
         </div>
       </div>

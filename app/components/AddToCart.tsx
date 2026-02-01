@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 interface AddToCartProps {
   productImage?: string;
@@ -55,9 +56,9 @@ const AddToCart = ({
               <button className="btn btn-sm" onClick={handleCloseModal}>
                 Continue Shopping
               </button>
-              <button className="btn btn-sm btn-primary">
+              <Link className="btn btn-sm btn-primary" href={'/cart'}>
                 View Cart
-              </button>
+              </Link>
             </div>
           </div>
           <form method="dialog" className="modal-backdrop">
