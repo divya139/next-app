@@ -12,7 +12,7 @@ interface Products {
 }
 
 const ProductCard = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/albums/1/photos");
+  const res = await fetch("http://localhost:3000/api/products");
   const products: Products[] = await res.json();
 
   return (
