@@ -1,29 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import Link from 'next/link';
-
-interface AddressDetails {
-  fullName: string;
-  email: string;
-  phone: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  country: string;
-}
+import { useRouter } from 'next/navigation';
+import { useStore } from '@/store/useStore';
 
 const CheckoutPage = () => {
-  const [formData, setFormData] = useState<AddressDetails>({
-    fullName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: ''
-  });
+  const addressDetails = useStore((state) => state.addressDetails);
+  const setAddressDetails = useStore((state) => state.setAddressDetails);
+  const router = useRouter();
+
+  const [formData, setFormData] = useState(addressDetails);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,12 +17,72 @@ const CheckoutPage = () => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid phone number';
+    }
+
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required';
+    }
+
+    if (!formData.state.trim()) {
+      newErrors.state = 'State is required';
+    }
+
+    if (!formData.zipCode.trim()) {
+      newErrors.zipCode = 'Zip code is required';
+    }
+
+    if (!formData.country.trim()) {
+      newErrors.country = 'Country is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    // Navigate to payment page
+    
+    if (validateForm()) {
+      setAddressDetails(formData);
+      router.push('/ordersummary');
+    } else {
+      // Scroll to first error
+      const firstErrorField = document.querySelector('.input-error');
+      if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
   };
 
   return (
@@ -44,7 +90,7 @@ const CheckoutPage = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-8">Checkout</h1>
 
-        <div className="bg-white rounded-lg shadow-md  outline-black/5 dark:bg-gray-800 p-8">
+        <div className="bg-white outline outline-black/5 dark:bg-gray-800 rounded-lg shadow-md p-8">
           <h2 className="text-2xl font-semibold mb-6">Address Details</h2>
 
           <form onSubmit={handleSubmit}>
@@ -59,9 +105,14 @@ const CheckoutPage = () => {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.fullName ? 'input-error' : ''}`}
                   required
                 />
+                {errors.fullName && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.fullName}</span>
+                  </label>
+                )}
               </div>
 
               {/* Email */}
@@ -74,9 +125,14 @@ const CheckoutPage = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.email ? 'input-error' : ''}`}
                   required
                 />
+                {errors.email && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.email}</span>
+                  </label>
+                )}
               </div>
 
               {/* Phone */}
@@ -89,9 +145,14 @@ const CheckoutPage = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.phone ? 'input-error' : ''}`}
                   required
                 />
+                {errors.phone && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.phone}</span>
+                  </label>
+                )}
               </div>
 
               {/* Address */}
@@ -104,9 +165,14 @@ const CheckoutPage = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.address ? 'input-error' : ''}`}
                   required
                 />
+                {errors.address && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.address}</span>
+                  </label>
+                )}
               </div>
 
               {/* City */}
@@ -119,9 +185,14 @@ const CheckoutPage = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.city ? 'input-error' : ''}`}
                   required
                 />
+                {errors.city && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.city}</span>
+                  </label>
+                )}
               </div>
 
               {/* State */}
@@ -134,9 +205,14 @@ const CheckoutPage = () => {
                   name="state"
                   value={formData.state}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.state ? 'input-error' : ''}`}
                   required
                 />
+                {errors.state && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.state}</span>
+                  </label>
+                )}
               </div>
 
               {/* Zip Code */}
@@ -149,9 +225,14 @@ const CheckoutPage = () => {
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.zipCode ? 'input-error' : ''}`}
                   required
                 />
+                {errors.zipCode && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.zipCode}</span>
+                  </label>
+                )}
               </div>
 
               {/* Country */}
@@ -164,9 +245,14 @@ const CheckoutPage = () => {
                   name="country"
                   value={formData.country}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className={`input input-bordered ${errors.country ? 'input-error' : ''}`}
                   required
                 />
+                {errors.country && (
+                  <label className="label">
+                    <span className="label-text-alt text-error">{errors.country}</span>
+                  </label>
+                )}
               </div>
             </div>
 

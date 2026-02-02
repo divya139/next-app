@@ -1,23 +1,34 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useStore } from '@/store/useStore';
 
 interface AddToCartProps {
   productImage?: string;
   productTitle?: string;
   price?: number;
   quantity?: number;
+  productId?: number;
 }
 
 const AddToCart = ({ 
   productImage = "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
   productTitle = "Product Title",
   price = 99.99,
-  quantity = 1
+  quantity = 1,
+  productId = 1
 }: AddToCartProps) => {
   const [showModal, setShowModal] = useState(false);
+  const addToCart = useStore((state) => state.addToCart);
 
   const handleAddToCart = () => {
+    addToCart({
+      id: productId,
+      productImage,
+      productTitle,
+      price,
+      quantity,
+    });
     setShowModal(true);
   };
 
@@ -46,8 +57,8 @@ const AddToCart = ({
               
               <div className="flex-1">
                 <h4 className="font-semibold text-base">{productTitle}</h4>
-                <p className="text-sm text-gray-600 mt-2">Price: ${price.toFixed(2)}</p>
-                <p className="text-sm text-gray-600">Quantity: {quantity}</p>
+                <p className="text-sm text-gray-200 mt-2">Price: ${price.toFixed(2)}</p>
+                <p className="text-sm text-gray-200">Quantity: {quantity}</p>
                 <p className="text-sm font-bold mt-2">Total: ${(price * quantity).toFixed(2)}</p>
               </div>
             </div>

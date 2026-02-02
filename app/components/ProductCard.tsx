@@ -23,7 +23,7 @@ const ProductCard = async () => {
             <Link href="/productdetails">
               <figure>
                 <img
-                  src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"//{product.thumbnailurl}
+                  src={product.thumbnailurl ? product.thumbnailurl : "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"}
                   alt={product.title}
                 />
               </figure>
@@ -38,6 +38,7 @@ const ProductCard = async () => {
             <div className="card-body pt-0">
               <div className="card-actions justify-end">
                 <AddToCart 
+                  productId={product.id}
                   productImage={product.thumbnailurl}
                   productTitle={product.title}
                   price={49.99}

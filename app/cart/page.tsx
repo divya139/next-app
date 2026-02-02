@@ -1,48 +1,13 @@
-'use client';
-import React, { useState } from 'react';
-import {  Trash } from 'lucide-react';
-import Link from 'next/link';
-
-interface CartItem {
-  id: number;
-  productImage: string;
-  productTitle: string;
-  quantity: number;
-  price: number;
-}
+"use client";
+import React from "react";
+import Link from "next/link";
+import { useStore } from "@/store/useStore";
+import { Trash } from "lucide-react";
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      productImage: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-      productTitle: "Product 1",
-      quantity: 2,
-      price: 49.99
-    },
-    {
-      id: 2,
-      productImage: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-      productTitle: "Product 2",
-      quantity: 1,
-      price: 79.99
-    },
-    {
-      id: 3,
-      productImage: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-      productTitle: "Product 3",
-      quantity: 3,
-      price: 39.99
-    }
-  ]);
-
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  const handleRemoveItem = (id: number) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
-  };
+  const cartItems = useStore((state) => state.cartItems);
+  const removeFromCart = useStore((state) => state.removeFromCart);
+  const getTotalPrice = useStore((state) => state.getTotalPrice);
 
   return (
     <div className="min-h-screen bg-base-200 py-8">
@@ -55,11 +20,15 @@ const CartPage = () => {
                  <Link className="btn btn-primary btn-sm ml-4" href={'/'}>Continue Shopping</Link>
             </span>
           </div>
-        ) : (          <>
+        ) : (
+          <>
             {/* Cart Items */}
             <div className="space-y-4">
               {cartItems.map((item) => (
-                <div key={item.id} className="bg-white rounded-lg shadow-md p-4 outline-black/5 dark:bg-gray-800">
+                <div
+                  key={item.id}
+                  className="bg-white outline outline-black/5 dark:bg-gray-800 rounded-lg shadow-md p-4"
+                >
                   <div className="flex gap-4 items-center">
                     {/* Product Image - Left */}
                     <img
@@ -71,8 +40,10 @@ const CartPage = () => {
                     {/* Product Details - Middle */}
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold">{item.productTitle}</h3>
-                      <p className="text-white mt-1">Price: ${item.price.toFixed(2)}</p>
-                      <p className="text-white">Quantity: {item.quantity}</p>
+                      <p className="text-gray-200 mt-1">
+                        Price: ${item.price.toFixed(2)}
+                      </p>
+                      <p className="text-gray-200">Quantity: {item.quantity}</p>
                     </div>
 
                     {/* Price and Actions - Right */}
@@ -81,10 +52,10 @@ const CartPage = () => {
                         ${(item.price * item.quantity).toFixed(2)}
                       </p>
                       <button
-                        onClick={() => handleRemoveItem(item.id)}
-                        className="btn btn-sm btn-ghost mt-2 text-white"
+                        onClick={() => removeFromCart(item.id)}
+                        className="btn btn-sm btn-ghost mt-2"
                       >
-                        <Trash />
+                        <Trash/> 
                       </button>
                     </div>
                   </div>
@@ -95,10 +66,12 @@ const CartPage = () => {
             {/* Order Summary */}
             <div className="mt-8 rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-4">
-               <h2 className="text-2xl font-bold ">Order Summary</h2> 
+                <h2 className="text-2xl font-bold">Order Summary</h2>
                 <div className="text-right">
-                  <p className="text-white">Subtotal: ${getTotalPrice().toFixed(2)}</p>
-                  <p className="text-white">Shipping: $10.00</p>
+                  <p className="text-gray-200">
+                    Subtotal: ${getTotalPrice().toFixed(2)}
+                  </p>
+                  <p className="text-gray-200">Shipping: $10.00</p>
                   <p className="text-2xl font-bold mt-2">
                     Total: ${(getTotalPrice() + 10).toFixed(2)}
                   </p>
@@ -107,7 +80,10 @@ const CartPage = () => {
 
               {/* Place Order Button */}
               <div className="flex justify-end">
-                <Link className="btn btn-primary btn-lg" href={'/checkout'}>
+                <Link
+                  href="/checkout"
+                  className="btn btn-primary btn-lg"
+                >
                   Place Order
                 </Link>
               </div>
