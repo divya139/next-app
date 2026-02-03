@@ -7,13 +7,13 @@ const ProductDetailsPage = () => {
   const searchParams = useSearchParams();
   const productId = searchParams.get('id');
   
-  const [quantity, setQuantity] = useState(1);
+  // const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const handleIncrease = () => setQuantity(prev => prev + 1);
-  const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  // const handleIncrease = () => setQuantity(prev => prev + 1);
+  // const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -79,12 +79,12 @@ const ProductDetailsPage = () => {
           </p>
           
           {/* Price */}
-          <div className="text-3xl font-bold text-primary">
+          <div className="text-3xl font-bold text-white">
             ${product.price.toFixed(2)}
           </div>
           
           {/* Quantity Controls */}
-          <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
             <span className="font-semibold">Quantity:</span>
             <div className="join">
               <button 
@@ -106,7 +106,7 @@ const ProductDetailsPage = () => {
                 +
               </button>
             </div>
-          </div>
+          </div> */}
           
           {/* Add to Cart Button */}
           <div className="mt-4">

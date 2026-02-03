@@ -34,7 +34,7 @@ const ProductCard = async () => {
       <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((product) => (
           <div key={product.id} className="card bg-base-100 w-80 shadow-sm">
-            <Link href="/productdetails">
+            <Link href={`/productdetails?id=${product.id}`}>
               <figure>
                 <img
                   src={product.image ? product.image : "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"}

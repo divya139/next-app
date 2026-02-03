@@ -39,7 +39,11 @@ const CartPage = () => {
 
                     {/* Product Details - Middle */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold">{item.productTitle}</h3>
+                      <h3 className="text-lg font-semibold">
+                        <Link href={`/productdetails?id=${item.id}`}>
+                        {item.productTitle}
+                        </Link>
+                        </h3>
                       <p className="text-gray-200 mt-1">
                         Price: ${item.price.toFixed(2)}
                       </p>

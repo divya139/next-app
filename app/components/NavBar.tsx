@@ -28,24 +28,24 @@ const NavBar = () => {
           </div>
           <div
             tabIndex={0}
-            className="card card-compact dropdown-content bg-base-100 z-1 mt-3 w-64 shadow">
+            className="card card-compact dropdown-content bg-base-100 z-10 mt-3 w-64 shadow-lg">
             <div className="card-body">
               <span className="text-lg font-bold">{totalItems} Item{totalItems !== 1 ? 's' : ''}</span>
               
               {cartItems.length > 0 ? (
                 <>
-                  <div className="max-h-64 overflow-y-auto">
+                  <div className="max-h-64 overflow-y-auto ">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex justify-between items-center py-2 border-b text-sm">
+                      <div key={item.id} className="flex justify-between items-center py-2 border-b  text-sm">
                         <div>
                           <p className="font-semibold">{item.productTitle}</p>
                           <p className="text-xs text-gray-200">Qty: {item.quantity}</p>
                         </div>
-                        <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-bold text-gray-200">${(item.price * item.quantity).toFixed(2)}</p>
                       </div>
                     ))}
                   </div>
-                  <span className="text-info font-bold text-lg mt-4">Subtotal: ${totalPrice.toFixed(2)}</span>
+                  <span className="text-white font-bold text-lg mt-4">Subtotal: ${totalPrice.toFixed(2)}</span>
                   <div className="card-actions">
                     <Link className="btn btn-primary btn-block" href={'/cart'}>View cart</Link>
                   </div>

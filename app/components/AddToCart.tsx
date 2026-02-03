@@ -65,6 +65,7 @@ const AddToCart = ({ productId }: AddToCartProps) => {
   return (
     <>
       <div className="flex gap-2 items-center">
+        Quantity
         <input 
           type="number" 
           min="1" 
