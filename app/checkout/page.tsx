@@ -91,7 +91,7 @@ const CheckoutPage = () => {
         <h1 className="text-4xl font-bold mb-8">Checkout</h1>
 
         <div className="bg-white outline outline-black/5 dark:bg-gray-800 rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-semibold mb-6">Address Details</h2>
+          <h2 className="text-2xl font-semibold mb-6">Shipping Address Details</h2>
 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
