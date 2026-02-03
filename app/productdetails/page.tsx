@@ -1,9 +1,9 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AddToCart from '../components/AddToCart';
 
-const ProductDetailsPage = () => {
+const ProductDetailsContent = () => {
   const searchParams = useSearchParams();
   const productId = searchParams.get('id');
   
@@ -115,6 +115,20 @@ const ProductDetailsPage = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const ProductDetailsPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="hero bg-base-200 min-h-screen">
+        <div className="text-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      </div>
+    }>
+      <ProductDetailsContent />
+    </Suspense>
   );
 };
 

@@ -4,12 +4,23 @@ import { NextRequest, NextResponse } from 'next/server'
 // GET order by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Order ID is required' },
+        { status: 400 }
+      )
+    }
+
     const order = await prisma.order.findUnique({
-      where: { id: params.id },
-      include: { orderItems: true }
+      where: { id },
+      include: {
+        orderItems: true
+      }
     })
 
     if (!order) {
@@ -21,8 +32,9 @@ export async function GET(
 
     return NextResponse.json(order)
   } catch (error) {
+    console.error('GET /api/orders/[id] error:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch order' },
+      { error: error instanceof Error ? error.message : 'Failed to fetch order' },
       { status: 500 }
     )
   }
@@ -31,9 +43,10 @@ export async function GET(
 // UPDATE order status
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
     const { status } = body
 
@@ -45,7 +58,7 @@ export async function PUT(
     }
 
     const order = await prisma.order.update({
-      where: { id: params.id },
+      where: { id },
       data: { status },
       include: { orderItems: true }
     })
@@ -62,11 +75,13 @@ export async function PUT(
 // DELETE order
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+
     await prisma.order.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Order deleted successfully' })
