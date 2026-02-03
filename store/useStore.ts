@@ -10,6 +10,7 @@ interface CartItem {
 }
 
 interface AddressDetails {
+  shippingAddress: any;
   fullName: string;
   email: string;
   phone: string;
@@ -77,14 +78,15 @@ export const useStore = create<StoreState>()(
 
       // Initial Address State
       addressDetails: {
-        fullName: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        state: '',
-        zipCode: '',
-        country: '',
+          fullName: '',
+          email: '',
+          phone: '',
+          address: '',
+          city: '',
+          state: '',
+          zipCode: '',
+          country: '',
+          shippingAddress: undefined
       },
 
       // Address Actions

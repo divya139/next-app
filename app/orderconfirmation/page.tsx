@@ -14,6 +14,7 @@ const OrderConfirmationPage = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     // Generate random order number
@@ -21,40 +22,101 @@ const OrderConfirmationPage = () => {
     setOrderNumber(randomOrderNumber);
     setIsLoading(false);
 
-    // Send confirmation email
-    const sendConfirmationEmail = async () => {
-      try {
-        const response = await fetch('/api/send-confirmation', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: addressDetails.email,
-            orderNumber: randomOrderNumber,
-            cartItems,
-            addressDetails,
-            totalPrice: getTotalPrice() + 10,
-          }),
-        });
+     if (cartItems.length > 0) {
+      submitOrder(randomOrderNumber)
+    }
+  }, [])
 
-        const result = await response.json();
-        
-        if (result.success) {
-          setEmailSent(true);
-        } else {
-          setEmailError(true);
-        }
-      } catch (error) {
-        console.error('Failed to send confirmation email:', error);
-        setEmailError(true);
-      }
-    };
-
-    if (addressDetails.email) {
+  useEffect(() => {
+    if (addressDetails.email && orderNumber) {
       sendConfirmationEmail();
     }
-  }, [addressDetails.email, cartItems, addressDetails, getTotalPrice]);
+  }, [orderNumber])
+
+  const submitOrder = async (randomOrderNumber: string) => {
+  setIsLoading(true)
+  setError(null)
+
+  try {
+    const response = await fetch('/api/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        customerName: addressDetails.fullName,
+        customerEmail: addressDetails.email,
+        customerPhone: addressDetails.phone,
+        shippingAddress: {
+          fullName: addressDetails.fullName,
+          address: addressDetails.address,
+          city: addressDetails.city,
+          state: addressDetails.state,
+          zipCode: addressDetails.zipCode,
+          country: addressDetails.country,
+        },
+        orderItems: cartItems.map((item) => ({
+          productId: item.id,
+          productTitle: item.productTitle,
+          productImage: item.productImage,
+          quantity: item.quantity,
+          price: item.price,
+          subtotal: item.price * item.quantity,
+        })),
+        subtotal: getTotalPrice(),
+        shippingCost: 10,
+        total: getTotalPrice() + 10,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || 'Failed to create order')
+    }
+
+    const order = await response.json()
+    setOrderNumber(order.orderNumber)
+    
+    // Clear cart from localStorage
+    localStorage.removeItem('cart')
+    clearCart()
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'An error occurred')
+    console.error('Order submission error:', err)
+  } finally {
+    setIsLoading(false)
+  }
+  }
+
+// Send confirmation email
+const sendConfirmationEmail = async () => {
+  try {
+    const response = await fetch('/api/send-confirmation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: addressDetails.email,
+        orderNumber: orderNumber,
+        cartItems,
+        addressDetails,
+        totalPrice: getTotalPrice() + 10,
+      }),
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      setEmailSent(true);
+    } else {
+      setEmailError(true);
+    }
+  } catch (error) {
+    console.error('Failed to send confirmation email:', error);
+    setEmailError(true);
+  }
+};
 
   // Prevent hydration mismatch by not rendering until client-side
   if (isLoading) {
