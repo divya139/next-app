@@ -15,7 +15,8 @@ interface Products {
 }
 
 const ProductCard = async () => {
-   const res = await fetch("http://localhost:3000/api/products", {
+   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+   const res = await fetch(`${baseUrl}/api/products`, {
     cache: 'no-store' // Ensures fresh data on each request
   });
    if (!res.ok) {
